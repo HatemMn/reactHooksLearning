@@ -3,14 +3,45 @@
 
 import * as React from 'react'
 
-function Greeting({initialName = ''}) {
-  // 🐨 initialize the state to the value from localStorage
-  // 💰 window.localStorage.getItem('name') ?? initialName
-  const [name, setName] = React.useState(initialName)
+function serialiseMyValue(key, data) {
+  if (
+    typeof data !== 'string' &&
+    typeof data !== 'number' &&
+    typeof data !== 'boolean' &&
+    typeof data !== 'object' &&
+    !Array.isArray(data)
+  ) {
+    throw new Error('Data must be a valid JSON value')
+  }
+  try {
+    return window.localStorage.setItem(key, JSON.stringify(data))
+  } catch (error) {
+    throw new Error(`Error serializing data: ${error.message}`)
+  }
+}
 
-  // 🐨 Here's where you'll use `React.useEffect`.
-  // The callback should set the `name` in localStorage.
-  // 💰 window.localStorage.setItem('name', name)
+function desializeMyValue(key) {
+  try {
+    return JSON.parse(window.localStorage.getItem(key))
+    // rest of your code using `data` as a JavaScript object
+  } catch (error) {
+    throw new Error(`Error deserializing data: ${error.message}`)
+  }
+}
+
+const useLocalStorageSyncedValue = (key, defaultValue = '') => {
+  const [value, setValue] = React.useState(
+    () => desializeMyValue(key) ?? defaultValue,
+  )
+  React.useEffect(() => {
+    serialiseMyValue(key, value)
+  }, [key, value])
+
+  return [value, setValue]
+}
+
+function Greeting({initialName = ''}) {
+  const [name, setName] = useLocalStorageSyncedValue('name', '')
 
   function handleChange(event) {
     setName(event.target.value)
