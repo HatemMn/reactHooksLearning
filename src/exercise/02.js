@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 
-function serialiseMyValue(key, data) {
+export function serialiseMyValue(key, data) {
   if (
     typeof data !== 'string' &&
     typeof data !== 'number' &&
@@ -20,16 +20,15 @@ function serialiseMyValue(key, data) {
   }
 }
 
-function desializeMyValue(key) {
+export function desializeMyValue(key) {
   try {
     return JSON.parse(window.localStorage.getItem(key))
-    // rest of your code using `data` as a JavaScript object
   } catch (error) {
     throw new Error(`Error deserializing data: ${error.message}`)
   }
 }
 
-const useLocalStorageSyncedValue = (key, defaultValue = '') => {
+export const useLocalStorageSyncedValue = (key, defaultValue = '') => {
   const [value, setValue] = React.useState(
     () => desializeMyValue(key) ?? defaultValue,
   )
