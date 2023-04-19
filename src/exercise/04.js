@@ -75,8 +75,7 @@ function Board(props) {
 }
 
 function Status(props) {
-  const {squares, setSquares, historySquares, setHistorySquares} = props
-  let {inThePast} = props
+  const {squares, setSquares, historySquares} = props
 
   function currentGameState() {
     if (squares.filter(x => x === null).length === 0)
@@ -94,22 +93,13 @@ function Status(props) {
   }
 
   function selectHistorySituation(situation) {
-    /*     if (!inThePast && situation === countPlayedMoves(historySquares)) {
-      throw Error(
-        'This is not supposed to happen, an user played with the disable property',
-      )
-    } */
-
-    inThePast = situation === countPlayedMoves(historySquares) ? false : true
-    // go back to the main situation i.e. draw again the squares
     let cop = [...squares]
 
-    console.log('situation', situation, historySquares)
     for (let i = 0; i < cop.length; i++) {
-      if (historySquares[i] < situation || historySquares[i] !== null) {
-        cop[i] = null
+      if (historySquares[i] <= situation && historySquares[i] !== null) {
+        cop[i] = historySquares[i] % 2 === 1 ? 'X' : 'O'
       } else {
-        cop[i] = calculateNextValue(cop)
+        cop[i] = null
       }
     }
 
@@ -121,7 +111,7 @@ function Status(props) {
       <div className="status">{currentGameState()}</div>
       <ol>
         {Array.from({length: movesPlayed + 1}, (_, step) => (
-          <li key={step}>
+          <li key={step} className={step}>
             <button
               disabled={isCurrentStatusText(step)}
               onClick={() => selectHistorySituation(step)}
@@ -142,15 +132,11 @@ function Game() {
     HISTORY_KEY,
     DEFAULT,
   )
-  let inThePast = !(
-    countPlayedMoves(historySquares) === countPlayedMoves(squares)
-  )
 
   return (
     <div className="game">
       <div className="game-board">
         <Board
-          inThePast={inThePast}
           squares={squares}
           setSquares={setSquares}
           historySquares={historySquares}
@@ -159,7 +145,6 @@ function Game() {
       </div>
       <div className="game-info">
         <Status
-          inThePast={inThePast}
           squares={squares}
           setSquares={setSquares}
           historySquares={historySquares}
