@@ -19,6 +19,7 @@ function ErrorCryingPikachu(errText) {
     </div>
   )
 }
+// eslint-disable-next-line no-unused-vars
 class ErrorBoundaryHatem extends React.Component {
   constructor(props) {
     super(props)
