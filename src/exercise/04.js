@@ -17,7 +17,7 @@ function Board(props) {
   const playedMoves = countPlayedMoves(historySquares)
 
   function selectSquare(square) {
-    // TODO : ajouter le cas du retour au passé qui suppr l'historique
+    // TODO : ajouter le cas d'un' retour au passé qui suppr ce qui y a après lui
     const ind = square
     if (
       squares[ind] === 'X' ||
@@ -29,6 +29,11 @@ function Board(props) {
 
     let cop = [...squares]
     let hist_cop = [...historySquares]
+    if (countPlayedMoves(cop) < hist_cop(hist_cop)) {
+      // current situation = nombre de trucs dans la boards càd nombre de cases dans cop
+      // hist_cop = la même mais après avoir supprimé tous les trucs supérieurs à current situation
+      // voila gg ez mais flemme de taper ça
+    }
 
     cop[ind] = calculateNextValue(squares)
     hist_cop[ind] = playedMoves + 1
