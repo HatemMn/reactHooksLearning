@@ -7,18 +7,6 @@ import {PokemonForm} from '../pokemon'
 import {ErrorBoundary} from 'react-error-boundary'
 //;('use client')
 
-function ErrorCryingPikachu(errText) {
-  return (
-    <div role="alert">
-      There was an error:{' uuuuuuuuuuu'}
-      <pre style={{whiteSpace: 'normal'}}>{errText}</pre>
-      <img
-        src="https://sportshub.cbsistatic.com/i/2021/03/17/51a83182-1c70-4762-af32-73234d1a4c8b/pikachu-pokemon-1161138.jpg"
-        alt="Sad Pikachu"
-      />
-    </div>
-  )
-}
 // eslint-disable-next-line no-unused-vars
 class ErrorBoundaryHatem extends React.Component {
   constructor(props) {
@@ -77,6 +65,29 @@ function PokemonInfo({pokemonName}) {
   throw new Error('This should be impossible')
 }
 
+function ErrorCryingPikachu(errText, onClickCallback) {
+  return (
+    <div role="alert" className="center">
+      There was an error:{' uuuuuuuuuuu'}
+      <pre style={{whiteSpace: 'normal'}}>{'errText'}</pre>
+      <img
+        src="https://sportshub.cbsistatic.com/i/2021/03/17/51a83182-1c70-4762-af32-73234d1a4c8b/pikachu-pokemon-1161138.jpg"
+        alt="Sad Pikachu"
+      />
+      <button onClick={onClickCallback}>Try Again</button>
+    </div>
+  )
+}
+
+function fallbackRender({error, resetErrorBoundary, setPokemonName}) {
+  function handleReset() {
+    setPokemonName('')
+    resetErrorBoundary()
+  }
+
+  return ErrorCryingPikachu(error, handleReset)
+}
+
 function App() {
   const [pokemonName, setPokemonName] = React.useState('')
 
@@ -89,12 +100,52 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary key={pokemonName} fallback={ErrorCryingPikachu()}>
+        <ErrorBoundary
+          key={pokemonName}
+          resetKeys={pokemonName}
+          fallbackRender={'lol'}
+        >
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>
     </div>
   )
 }
+/* 
 
+function fallbackRender({error, resetErrorBoundary}) {
+  const [pokemonName, setPokemonName] = React.useState('')
+  
+  function handleReset() {
+    setPokemonName('')
+    resetErrorBoundary()
+  }
+
+  return ErrorCryingPikachu(error, handleReset)
+}
+
+function App() {
+  const [pokemonName, setPokemonName] = React.useState('')
+
+  function handleSubmit(newPokemonName) {
+    setPokemonName(newPokemonName)
+  }
+
+  return (
+    <div className="pokemon-info-app">
+      <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
+      <hr />
+      <div className="pokemon-info">
+        <ErrorBoundary
+          key={pokemonName}
+          resetKeys={pokemonName}
+          fallbackRender={fallbackRender({error, resetErrorBoundary}, setPokemonName)}
+        >
+          <PokemonInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
+      </div>
+    </div>
+  )
+}
+ */
 export default App
